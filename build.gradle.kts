@@ -1,5 +1,11 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
+plugins {
+    alias(libs.plugins.vanniktech.maven.publish)
+    `java-library` // necessary so that com.vanniktech.maven.publish sees the artefact to be published
+    signing
+}
+
 buildscript {
     repositories {
         mavenCentral()
@@ -40,4 +46,24 @@ subprojects {
             })
         }
     }
+}
+
+// The plugin vanniktech.maven.publish has some advantages over Gradle's own `maven-publish`.
+// Publish the artefact like this:
+//    $ ./gradlew build && ./gradlew publishToMavenCentral
+// You can publish to maven local with:
+//    $ ./gradlew build && ./gradlew publishToMavenLocal
+// Maven local is in ~/.m2/repository/io/github/digorydoo/kstruct
+mavenPublishing {
+    publishToMavenCentral()
+    signAllPublications()
+}
+
+// If signing fails with the error:
+//    gpg: signing failed: Inappropriate ioctl for device
+// then add this to your .bashrc:
+//    export GPG_TTY=$(tty)
+signing {
+    useGpgCmd()
+    sign(publishing.publications)
 }
