@@ -1,4 +1,4 @@
-package ch.digorydoo.kstruct
+package io.github.digorydoo.kstruct
 
 class KstructSerialiser(indent: Int = 3, private val style: Style = Style.INDENTED) {
     class EmptyKeysNotAllowedException: Exception("Empty keys are not allowed")

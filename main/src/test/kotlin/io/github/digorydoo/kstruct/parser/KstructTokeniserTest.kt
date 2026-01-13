@@ -1,6 +1,6 @@
-package ch.digorydoo.kstruct.parser
+package io.github.digorydoo.kstruct.parser
 
-import ch.digorydoo.kstruct.parser.KstructTokeniser.*
+import io.github.digorydoo.kstruct.parser.KstructTokeniser.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

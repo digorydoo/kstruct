@@ -1,4 +1,4 @@
-package ch.digorydoo.kstruct
+package io.github.digorydoo.kstruct
 
 class KstructAttribute(val value: KstructValue) {
     init {

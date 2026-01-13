@@ -1,4 +1,4 @@
-package ch.digorydoo.kstruct.parser
+package io.github.digorydoo.kstruct.parser
 
 internal class KstructTokeniser private constructor(private val text: String) {
     class BadDigitSequenceException(line: Int, part: String): Exception("Line $line: Bad digit sequence: $part")

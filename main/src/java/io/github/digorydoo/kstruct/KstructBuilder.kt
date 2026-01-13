@@ -1,4 +1,4 @@
-package ch.digorydoo.kstruct
+package io.github.digorydoo.kstruct
 
 // This annotation prevents accidental calls of a member in the DSL's outer scope
 @DslMarker

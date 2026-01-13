@@ -1,4 +1,4 @@
-package ch.digorydoo.kstruct
+package io.github.digorydoo.kstruct
 
 sealed class KstructValue {
     open fun booleanOrNull(): Boolean? = null

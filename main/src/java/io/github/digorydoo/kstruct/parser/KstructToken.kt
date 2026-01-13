@@ -1,4 +1,4 @@
-package ch.digorydoo.kstruct.parser
+package io.github.digorydoo.kstruct.parser
 
 internal sealed class KstructToken<C>(val line: Int, val content: C) {
     final override fun toString() = "${this::class.simpleName}(line=$line, content=$content)"

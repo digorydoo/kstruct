@@ -1,4 +1,4 @@
-package ch.digorydoo.kstruct.parser
+package io.github.digorydoo.kstruct.parser
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

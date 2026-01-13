@@ -1,6 +1,6 @@
-package ch.digorydoo.kstruct.parser
+package io.github.digorydoo.kstruct.parser
 
-import ch.digorydoo.kstruct.*
+import io.github.digorydoo.kstruct.*
 
 class KstructParser private constructor(private val tokens: List<KstructToken<*>>) {
     class DuplicateKeyException(line: Int, content: String): Exception("Line $line: Duplicate key: $content")

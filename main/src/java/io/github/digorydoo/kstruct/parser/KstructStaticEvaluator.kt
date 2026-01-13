@@ -1,4 +1,4 @@
-package ch.digorydoo.kstruct.parser
+package io.github.digorydoo.kstruct.parser
 
 /**
  * This class takes a list of tokens and produces a new list of tokens where sequences of tokens that can be statically

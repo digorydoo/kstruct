@@ -1,6 +1,6 @@
-package ch.digorydoo.kstruct
+package io.github.digorydoo.kstruct
 
-import ch.digorydoo.kstruct.KstructSerialiser.Style
+import io.github.digorydoo.kstruct.KstructSerialiser.Style
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

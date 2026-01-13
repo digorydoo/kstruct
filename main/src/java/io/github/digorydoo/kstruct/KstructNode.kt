@@ -1,4 +1,4 @@
-package ch.digorydoo.kstruct
+package io.github.digorydoo.kstruct
 
 class KstructNode(var value: KstructValue) {
     fun isNull() = value is KstructNull
