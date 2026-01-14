@@ -18,6 +18,14 @@ allprojects {
     }
 }
 
+java {
+    toolchain {
+        // This is necessary even though the subproject uses jvmToolchain, otherwise the library will target the wrong
+        // JDK. Make sure the two are always in sync!
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
 subprojects {
     // The following modifies the configuration of the "test" task in all subprojects
     tasks.withType<Test>().configureEach {
@@ -48,12 +56,16 @@ subprojects {
     }
 }
 
-// The plugin vanniktech.maven.publish has some advantages over Gradle's own `maven-publish`.
-// Publish the artefact like this:
-//    $ ./gradlew build && ./gradlew publishToMavenCentral
-// You can publish to maven local with:
+// We use the plugin vanniktech.maven.publish, which has some advantages over Gradle's own `maven-publish`.
+// POM metadata are in gradle.properties.
+// Publish locally if desired (e.g. for verifying target JDK):
 //    $ ./gradlew build && ./gradlew publishToMavenLocal
 // Maven local is in ~/.m2/repository/io/github/digorydoo/kstruct
+// Upload to sonatype:
+//    $ ./gradlew build && ./gradlew publishToMavenCentral
+// Uploads will appear in: https://central.sonatype.com/publishing/deployments
+// Uploads must be published manually (see mavenCentralAutomaticPublishing in gradle.properties).
+// Published version is here: https://central.sonatype.com/artifact/io.github.digorydoo/kstruct/overview
 mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
