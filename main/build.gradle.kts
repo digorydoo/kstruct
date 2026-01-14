@@ -21,7 +21,7 @@ sourceSets {
 
 dependencies {
     // Versions are maintained in gradle/libs.versions.toml
-    implementation(platform(kotlin("bom")))
+    // Do NOT include platform(kotlin("bom")) here, or sonatype will reject the artefact!
     testImplementation(kotlin("test"))
 }
 
