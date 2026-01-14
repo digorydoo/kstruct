@@ -1,11 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
-plugins {
-    alias(libs.plugins.vanniktech.maven.publish)
-    `java-library` // necessary so that com.vanniktech.maven.publish sees the artefact to be published
-    signing
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -15,14 +9,6 @@ buildscript {
 allprojects {
     repositories {
         mavenCentral()
-    }
-}
-
-java {
-    toolchain {
-        // This is necessary even though the subproject uses jvmToolchain, otherwise the library will target the wrong
-        // JDK. Make sure the two are always in sync!
-        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
@@ -54,28 +40,4 @@ subprojects {
             })
         }
     }
-}
-
-// We use the plugin vanniktech.maven.publish, which has some advantages over Gradle's own `maven-publish`.
-// POM metadata are in gradle.properties.
-// Publish locally if desired (e.g. for verifying target JDK):
-//    $ ./gradlew build && ./gradlew publishToMavenLocal
-// Maven local is in ~/.m2/repository/io/github/digorydoo/kstruct
-// Upload to sonatype:
-//    $ ./gradlew build && ./gradlew publishToMavenCentral
-// Uploads will appear in: https://central.sonatype.com/publishing/deployments
-// Uploads must be published manually (see mavenCentralAutomaticPublishing in gradle.properties).
-// Published version is here: https://central.sonatype.com/artifact/io.github.digorydoo/kstruct/overview
-mavenPublishing {
-    publishToMavenCentral()
-    signAllPublications()
-}
-
-// If signing fails with the error:
-//    gpg: signing failed: Inappropriate ioctl for device
-// then add this to your .bashrc:
-//    export GPG_TTY=$(tty)
-signing {
-    useGpgCmd()
-    sign(publishing.publications)
 }
