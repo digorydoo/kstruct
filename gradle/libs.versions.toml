@@ -1,5 +1,4 @@
 [versions]
-targetJDK = "17"
 kotlin = "2.3.0"
 
 [libraries]
