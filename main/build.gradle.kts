@@ -9,7 +9,6 @@ kotlin {
     jvmToolchain(17)
 }
 
-// FIXME: Move sources to src/main/kotlin/io/github/digorydoo/kstruct
 // Then this should no longer be necessary.
 sourceSets {
     main {

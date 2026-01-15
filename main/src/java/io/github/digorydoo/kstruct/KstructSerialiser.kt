@@ -7,28 +7,28 @@ class KstructSerialiser(indent: Int = 3, private val style: Style = Style.INDENT
 
     private val indent = Array(indent) { " " }.joinToString("")
 
-    fun serialise(kstruct: KstructNode): String {
-        val map = (kstruct.value as? KstructMap)
+    fun serialise(node: KstructNode): String {
+        val map = (node as? KstructMap)
             ?.takeIf { it.attributes.isEmpty() }
             ?: KstructMap(
-                children = mutableMapOf("value" to kstruct),
+                children = mutableMapOf("value" to node),
                 attributes = mutableMapOf(),
             )
-        return serialiseValue(map, -1, true)
+        return serialiseMap(map.children, map.attributes, -1, true)
     }
 
-    private fun serialiseValue(value: KstructValue, level: Int, anonymous: Boolean) =
-        when (value) {
+    private fun serialiseChild(child: KstructNode, level: Int, anonymous: Boolean) =
+        when (child) {
             is KstructNull -> "null"
-            is KstructBoolean -> value.value.toString()
-            is KstructChar -> serialiseChar(value.value)
-            is KstructInt -> value.value.toString()
-            is KstructLong -> "${value.value}L"
-            is KstructFloat -> if (value.value.isFinite()) "${value.value}f" else "null"
-            is KstructDouble -> if (value.value.isFinite()) "${value.value}" else "null"
-            is KstructString -> serialiseString(value.value)
-            is KstructMap -> serialiseMap(value.children, value.attributes, level, anonymous)
-            is KstructList -> serialiseList(value.children, level)
+            is KstructBoolean -> child.value.toString()
+            is KstructChar -> serialiseChar(child.value)
+            is KstructInt -> child.value.toString()
+            is KstructLong -> "${child.value}L"
+            is KstructFloat -> if (child.value.isFinite()) "${child.value}f" else "null"
+            is KstructDouble -> if (child.value.isFinite()) "${child.value}" else "null"
+            is KstructString -> serialiseString(child.value)
+            is KstructMap -> serialiseMap(child.children, child.attributes, level, anonymous)
+            is KstructList -> serialiseList(child.children, level)
         }
 
     private fun serialiseString(value: String) =
@@ -77,7 +77,7 @@ class KstructSerialiser(indent: Int = 3, private val style: Style = Style.INDENT
                 if (firstAttr) firstAttr = false
                 else result += ", "
 
-                result += encodeKey(attrName) + " = " + serialiseValue(attrValue.value, level + 1, false)
+                result += encodeKey(attrName) + " = " + serialiseChild(attrValue.value, level + 1, false)
             }
 
             result += ")"
@@ -113,13 +113,12 @@ class KstructSerialiser(indent: Int = 3, private val style: Style = Style.INDENT
             }
 
             result += innerIndent + encodeKey(key)
-            val childValue = child.value
 
-            if (childValue !is KstructMap) {
+            if (child !is KstructMap) {
                 result += " = "
             }
 
-            result += serialiseValue(childValue, level + 1, false)
+            result += serialiseChild(child, level + 1, false)
         }
 
         if (level >= 0) {
@@ -144,7 +143,7 @@ class KstructSerialiser(indent: Int = 3, private val style: Style = Style.INDENT
                 result += if (wrap) ",\n" else ", "
             }
 
-            result += innerIndent + serialiseValue(child.value, level + (if (wrap) 1 else 0), true)
+            result += innerIndent + serialiseChild(child, level + (if (wrap) 1 else 0), true)
         }
 
         if (wrap) result += "\n$outerIndent"
@@ -156,9 +155,9 @@ class KstructSerialiser(indent: Int = 3, private val style: Style = Style.INDENT
         private val nonEncodedKeysRegex = Regex("[a-zA-Z][-_a-zA-Z0-9]*")
 
         private fun Map<String, KstructNode>.hasAnyNestedChildren() =
-            any { (_, node) -> node.isMap() || node.isList() }
+            any { (_, node) -> node is KstructMap || node is KstructList }
 
         private fun List<KstructNode>.hasAnyNestedChildren() =
-            any { node -> node.isMap() || node.isList() }
+            any { node -> node is KstructMap || node is KstructList }
     }
 }

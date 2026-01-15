@@ -10,7 +10,7 @@ infix fun <A, B> A.into(lambda: (A) -> B): B = lambda(this)
 internal class KstructSerializerTest {
     @Test
     fun `should correctly serialize a NullValue`() {
-        val node = KstructNode(KstructNull())
+        val node = KstructNull()
         val s = KstructSerialiser(indent = 3)
         assertEquals("value = null", s.serialise(node))
     }
@@ -19,23 +19,23 @@ internal class KstructSerializerTest {
     fun `should correctly serialize a BooleanValue`() {
         val s = KstructSerialiser(indent = 3)
 
-        var node = KstructNode(KstructBoolean(false))
+        var node = KstructBoolean(false)
         assertEquals("value = false", s.serialise(node))
 
-        node = KstructNode(KstructBoolean(true))
+        node = KstructBoolean(true)
         assertEquals("value = true", s.serialise(node))
     }
 
     @Test
     fun `should correctly serialize a CharValue`() {
-        val node = KstructNode(KstructChar('Y'))
+        val node = KstructChar('Y')
         val s = KstructSerialiser(indent = 3)
         assertEquals("value = 'Y'", s.serialise(node))
     }
 
     @Test
     fun `should correctly serialize an IntValue`() {
-        val node = KstructNode(KstructInt(0))
+        val node = KstructInt(0)
         val s = KstructSerialiser(indent = 3)
         assertEquals("value = 0", s.serialise(node))
     }
@@ -43,44 +43,44 @@ internal class KstructSerializerTest {
     @Test
     fun `should correctly serialize a finite FloatValue`() {
         val s = KstructSerialiser(indent = 3)
-        KstructNode(KstructFloat(4.2f)).let { assertEquals("value = 4.2f", s.serialise(it)) }
-        KstructNode(KstructFloat(Float.MAX_VALUE)).let { assertEquals("value = 3.4028235E38f", s.serialise(it)) }
-        KstructNode(KstructFloat(Float.MIN_VALUE)).let { assertEquals("value = 1.4E-45f", s.serialise(it)) }
+        KstructFloat(4.2f).let { assertEquals("value = 4.2f", s.serialise(it)) }
+        KstructFloat(Float.MAX_VALUE).let { assertEquals("value = 3.4028235E38f", s.serialise(it)) }
+        KstructFloat(Float.MIN_VALUE).let { assertEquals("value = 1.4E-45f", s.serialise(it)) }
     }
 
     @Test
     fun `should serialize a FloatValue as null if it is not finite`() {
         // This is consistent with what JSON.stringify does in JavaScript.
         val s = KstructSerialiser(indent = 3)
-        KstructNode(KstructFloat(Float.POSITIVE_INFINITY)).let { assertEquals("value = null", s.serialise(it)) }
-        KstructNode(KstructFloat(Float.NEGATIVE_INFINITY)).let { assertEquals("value = null", s.serialise(it)) }
-        KstructNode(KstructFloat(Float.NaN)).let { assertEquals("value = null", s.serialise(it)) }
+        KstructFloat(Float.POSITIVE_INFINITY).let { assertEquals("value = null", s.serialise(it)) }
+        KstructFloat(Float.NEGATIVE_INFINITY).let { assertEquals("value = null", s.serialise(it)) }
+        KstructFloat(Float.NaN).let { assertEquals("value = null", s.serialise(it)) }
     }
 
     @Test
     fun `should correctly serialize a finite DoubleValue`() {
         val s = KstructSerialiser(indent = 3)
-        KstructNode(KstructDouble(4.2)).let { assertEquals("value = 4.2", s.serialise(it)) }
-        KstructNode(KstructDouble(Double.MAX_VALUE)).let {
+        KstructDouble(4.2).let { assertEquals("value = 4.2", s.serialise(it)) }
+        KstructDouble(Double.MAX_VALUE).let {
             assertEquals("value = 1.7976931348623157E308", s.serialise(it))
         }
-        KstructNode(KstructDouble(Double.MIN_VALUE)).let { assertEquals("value = 4.9E-324", s.serialise(it)) }
+        KstructDouble(Double.MIN_VALUE).let { assertEquals("value = 4.9E-324", s.serialise(it)) }
     }
 
     @Test
     fun `should serialize a DoubleValue as null if it is not finite`() {
         // This is consistent with what JSON.stringify does in JavaScript.
         val s = KstructSerialiser(indent = 3)
-        KstructNode(KstructDouble(Double.POSITIVE_INFINITY)).let { assertEquals("value = null", s.serialise(it)) }
-        KstructNode(KstructDouble(Double.NEGATIVE_INFINITY)).let { assertEquals("value = null", s.serialise(it)) }
-        KstructNode(KstructDouble(Double.NaN)).let { assertEquals("value = null", s.serialise(it)) }
+        KstructDouble(Double.POSITIVE_INFINITY).let { assertEquals("value = null", s.serialise(it)) }
+        KstructDouble(Double.NEGATIVE_INFINITY).let { assertEquals("value = null", s.serialise(it)) }
+        KstructDouble(Double.NaN).let { assertEquals("value = null", s.serialise(it)) }
     }
 
     @Test
     fun `should correctly serialize a StringValue`() {
         val s = KstructSerialiser(indent = 3)
 
-        var node = KstructNode(KstructString("hello"))
+        var node = KstructString("hello")
         assertEquals(
             """
             value = "hello"
@@ -88,7 +88,7 @@ internal class KstructSerializerTest {
             s.serialise(node)
         )
 
-        node = KstructNode(KstructString("I'm Batman"))
+        node = KstructString("I'm Batman")
         assertEquals(
             """
             value = "I'm Batman"
@@ -96,7 +96,7 @@ internal class KstructSerializerTest {
             s.serialise(node)
         )
 
-        node = KstructNode(KstructString("So-called \"Batman\""))
+        node = KstructString("So-called \"Batman\"")
         assertEquals(
             """
             value = "So-called \"Batman\""
@@ -104,7 +104,7 @@ internal class KstructSerializerTest {
             s.serialise(node)
         )
 
-        node = KstructNode(KstructString("With\nNewlines\rCarriage-Returns\tTabs and 漢字"))
+        node = KstructString("With\nNewlines\rCarriage-Returns\tTabs and 漢字")
         assertEquals(
             """
             value = "With\nNewlines\rCarriage-Returns\tTabs and 漢字"
@@ -115,26 +115,24 @@ internal class KstructSerializerTest {
 
     @Test
     fun `should correctly serialize an empty MapValue`() {
-        val node = KstructNode(KstructMap(mutableMapOf(), mutableMapOf()))
+        val node = KstructMap(mutableMapOf(), mutableMapOf())
         val s = KstructSerialiser(indent = 3)
         assertEquals("", s.serialise(node))
     }
 
     @Test
     fun `should correctly serialise a shallow MapValue with no attributes`() {
-        val node = KstructNode(
-            KstructMap(
-                mutableMapOf(
-                    "some-null" to KstructNode(KstructNull()),
-                    "the Boolean" to KstructNode(KstructBoolean(true)),
-                    "some\"Char\"" to KstructNode(KstructChar('a')),
-                    "some'Int'" to KstructNode(KstructInt(7713)),
-                    "some`Float`" to KstructNode(KstructFloat(99.11f)),
-                    "some-double" to KstructNode(KstructDouble(33.987654)),
-                    "some-string" to KstructNode(KstructString("Hello Josephine")),
-                ),
-                mutableMapOf()
-            )
+        val node = KstructMap(
+            mutableMapOf(
+                "some-null" to KstructNull(),
+                "the Boolean" to KstructBoolean(true),
+                "some\"Char\"" to KstructChar('a'),
+                "some'Int'" to KstructInt(7713),
+                "some`Float`" to KstructFloat(99.11f),
+                "some-double" to KstructDouble(33.987654),
+                "some-string" to KstructString("Hello Josephine"),
+            ),
+            mutableMapOf()
         )
         val s = KstructSerialiser(indent = 3)
         assertEquals(
@@ -153,18 +151,16 @@ internal class KstructSerializerTest {
 
     @Test
     fun `should correctly serialise a MapValue with no children, but non-empty attributes`() {
-        val node = KstructNode(
-            KstructMap(
-                mutableMapOf(),
-                mutableMapOf(
-                    "attr-null" to KstructAttribute(KstructNull()),
-                    "attr-boolean" to KstructAttribute(KstructBoolean(false)),
-                    "attr-char" to KstructAttribute(KstructChar('a')),
-                    "attr-int" to KstructAttribute(KstructInt(7713)),
-                    "attr-float" to KstructAttribute(KstructFloat(99.11f)),
-                    "attr-double" to KstructAttribute(KstructDouble(33.987654)),
-                    "attr-string" to KstructAttribute(KstructString("Hello Josephine")),
-                )
+        val node = KstructMap(
+            mutableMapOf(),
+            mutableMapOf(
+                "attr-null" to KstructAttribute(KstructNull()),
+                "attr-boolean" to KstructAttribute(KstructBoolean(false)),
+                "attr-char" to KstructAttribute(KstructChar('a')),
+                "attr-int" to KstructAttribute(KstructInt(7713)),
+                "attr-float" to KstructAttribute(KstructFloat(99.11f)),
+                "attr-double" to KstructAttribute(KstructDouble(33.987654)),
+                "attr-string" to KstructAttribute(KstructString("Hello Josephine")),
             )
         )
         val s = KstructSerialiser(indent = 3)
@@ -177,26 +173,24 @@ internal class KstructSerializerTest {
 
     @Test
     fun `should correctly serialise a MapValue that has shallow children as well as attributes`() {
-        val node = KstructNode(
-            KstructMap(
-                mutableMapOf(
-                    "some-null" to KstructNode(KstructNull()),
-                    "some-boolean" to KstructNode(KstructBoolean(false)),
-                    "some-char" to KstructNode(KstructChar('a')),
-                    "some-int" to KstructNode(KstructInt(7713)),
-                    "some-float" to KstructNode(KstructFloat(99.11f)),
-                    "some-double" to KstructNode(KstructDouble(33.987654)),
-                    "some-string" to KstructNode(KstructString("Hello Josephine")),
-                ),
-                mutableMapOf(
-                    "b" to KstructAttribute(KstructBoolean(true)),
-                    "n" to KstructAttribute(KstructNull()),
-                    "c" to KstructAttribute(KstructChar('C')),
-                    "i" to KstructAttribute(KstructInt(7714)),
-                    "f" to KstructAttribute(KstructFloat(99.22f)),
-                    "d" to KstructAttribute(KstructDouble(42.987654)),
-                    "s" to KstructAttribute(KstructString("Blah")),
-                )
+        val node = KstructMap(
+            mutableMapOf(
+                "some-null" to KstructNull(),
+                "some-boolean" to KstructBoolean(false),
+                "some-char" to KstructChar('a'),
+                "some-int" to KstructInt(7713),
+                "some-float" to KstructFloat(99.11f),
+                "some-double" to KstructDouble(33.987654),
+                "some-string" to KstructString("Hello Josephine"),
+            ),
+            mutableMapOf(
+                "b" to KstructAttribute(KstructBoolean(true)),
+                "n" to KstructAttribute(KstructNull()),
+                "c" to KstructAttribute(KstructChar('C')),
+                "i" to KstructAttribute(KstructInt(7714)),
+                "f" to KstructAttribute(KstructFloat(99.22f)),
+                "d" to KstructAttribute(KstructDouble(42.987654)),
+                "s" to KstructAttribute(KstructString("Blah")),
             )
         )
         val s = KstructSerialiser(indent = 3)
@@ -218,7 +212,7 @@ internal class KstructSerializerTest {
 
     @Test
     fun `should correctly serialize an empty ListValue`() {
-        val node = KstructNode(KstructList(mutableListOf()))
+        val node = KstructList(mutableListOf())
         val s = KstructSerialiser(indent = 3)
         assertEquals("value = []", s.serialise(node))
     }
@@ -231,76 +225,61 @@ internal class KstructSerializerTest {
         assertEquals(
             "value = [null]",
             KstructNull() into
-                ::KstructNode into
                 mutableNodesListOf into
                 ::KstructList into
-                ::KstructNode into
                 s::serialise
         )
 
         assertEquals(
             "value = [[]]",
             KstructList(mutableListOf()) into
-                ::KstructNode into
                 mutableNodesListOf into
                 ::KstructList into
-                ::KstructNode into
                 s::serialise
         )
 
         assertEquals(
             "value = [[null]]",
             KstructNull() into
-                ::KstructNode into
                 mutableNodesListOf into
                 ::KstructList into
-                ::KstructNode into
                 mutableNodesListOf into
                 ::KstructList into
-                ::KstructNode into
                 s::serialise
         )
 
         assertEquals(
             "value = [[{}]]",
             KstructMap(mutableMapOf(), mutableMapOf()) into
-                ::KstructNode into
                 mutableNodesListOf into
                 ::KstructList into
-                ::KstructNode into
                 mutableNodesListOf into
                 ::KstructList into
-                ::KstructNode into
                 s::serialise
         )
 
         assertEquals(
             "value = [[{ a = true }]]",
-            KstructMap(mutableMapOf("a" to KstructNode(KstructBoolean(true))), mutableMapOf()) into
-                ::KstructNode into
+            KstructMap(mutableMapOf("a" to KstructBoolean(true)), mutableMapOf()) into
                 mutableNodesListOf into
                 ::KstructList into
-                ::KstructNode into
                 mutableNodesListOf into
                 ::KstructList into
-                ::KstructNode into
                 s::serialise
         )
     }
 
     @Test
     fun `should correctly serialize a ListValue with shallow children`() {
-        val node = KstructNode(
-            KstructList(
-                mutableListOf(
-                    KstructNode(KstructNull()),
-                    KstructNode(KstructBoolean(true)),
-                    KstructNode(KstructChar('a')),
-                    KstructNode(KstructInt(7713)),
-                    KstructNode(KstructFloat(99.11f)),
-                    KstructNode(KstructDouble(33.987654)),
-                    KstructNode(KstructString("Hello Josephine")),
-                )
+        val node = KstructList(
+            mutableListOf(
+                KstructNull(),
+                KstructBoolean(true),
+                KstructChar('a'),
+                KstructInt(7713),
+                KstructFloat(99.11f),
+                KstructDouble(33.987654),
+                KstructString("Hello Josephine"),
             )
         )
         val s = KstructSerialiser(indent = 3)

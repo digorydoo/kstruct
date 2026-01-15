@@ -47,8 +47,7 @@ class KstructParser private constructor(private val tokens: List<KstructToken<*>
                     val key = token.content
                     if (key.isEmpty()) throw EmptyKeyNotAllowedException(token.line)
                     if (map.children.containsKey(key)) throw DuplicateKeyException(token.line, key)
-                    val value = readAfterMapKey()
-                    map.children[key] = KstructNode(value)
+                    map.children[key] = readAfterMapKey()
 
                     nextRequiresSeparator = tokens.getOrNull(nextTokenIdx - 1).let {
                         it !is NewlineToken && it !is ClosingBraceToken && it !is ClosingBracketToken && it !is SemicolonToken && it !is CommaToken
@@ -94,7 +93,7 @@ class KstructParser private constructor(private val tokens: List<KstructToken<*>
         }
     }
 
-    fun readAfterMapKey(): KstructValue {
+    fun readAfterMapKey(): KstructNode {
         var newMap: KstructMap? = null
 
         while (true) {
@@ -158,7 +157,7 @@ class KstructParser private constructor(private val tokens: List<KstructToken<*>
         }
     }
 
-    private fun readValue(): KstructValue {
+    private fun readValue(): KstructNode {
         while (true) {
             when (val token = nextToken()) {
                 is Literal -> return when (token.content) {
@@ -283,7 +282,7 @@ class KstructParser private constructor(private val tokens: List<KstructToken<*>
                     nextRequiresComma = false
 
                     if (newMap != null) {
-                        list.children.add(KstructNode(newMap))
+                        list.children.add(newMap)
                         newMap = null
                     }
                 }
@@ -291,7 +290,7 @@ class KstructParser private constructor(private val tokens: List<KstructToken<*>
                 is NewlineToken -> Unit
 
                 is ClosingBracketToken -> {
-                    if (newMap != null) list.children.add(KstructNode(newMap))
+                    if (newMap != null) list.children.add(newMap)
                     return
                 }
 
@@ -307,7 +306,7 @@ class KstructParser private constructor(private val tokens: List<KstructToken<*>
                     // newMap may already be defined if there were attributes
                     if (newMap == null) newMap = KstructMap(mutableMapOf(), mutableMapOf())
                     readMapChildren(newMap, isRoot = false) // eats CloseBrace
-                    list.children.add(KstructNode(newMap))
+                    list.children.add(newMap)
                     newMap = null
                     nextRequiresComma = true
                 }
@@ -318,7 +317,7 @@ class KstructParser private constructor(private val tokens: List<KstructToken<*>
                     if (nextRequiresComma) throw MissingCommaException(token.line)
                     nextTokenIdx-- // read token again
                     val value = readValue()
-                    list.children.add(KstructNode(value))
+                    list.children.add(value)
                     nextRequiresComma = true
                 }
             }
@@ -326,13 +325,13 @@ class KstructParser private constructor(private val tokens: List<KstructToken<*>
     }
 
     companion object {
-        fun parse(text: String): KstructNode {
+        fun parse(text: String): KstructMap {
             var tokens = KstructTokeniser.tokenise(text)
             tokens = KstructStaticEvaluator.evaluate(tokens)
             val parser = KstructParser(tokens)
             val root = KstructMap(mutableMapOf(), mutableMapOf())
             parser.readMapChildren(root, isRoot = true)
-            return KstructNode(root)
+            return root
         }
     }
 }

@@ -1,6 +1,6 @@
 package io.github.digorydoo.kstruct
 
-class KstructAttribute(val value: KstructValue) {
+class KstructAttribute(val value: KstructNode) {
     init {
         require(value !is KstructMap) { "A KstructMap cannot be used as an attribute" }
         require(value !is KstructList) { "A KstructList cannot be used as an attribute" }
