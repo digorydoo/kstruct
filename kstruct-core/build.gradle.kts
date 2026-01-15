@@ -9,15 +9,6 @@ kotlin {
     jvmToolchain(17)
 }
 
-// Then this should no longer be necessary.
-sourceSets {
-    main {
-        java {
-            setSrcDirs(listOf("src/java"))
-        }
-    }
-}
-
 dependencies {
     // Versions are maintained in gradle/libs.versions.toml
     // Do NOT include platform(kotlin("bom")) here, or sonatype will reject the artefact!

@@ -1,2 +1,2 @@
 rootProject.name = "kstruct"
-include("main")
+include("kstruct-core")
