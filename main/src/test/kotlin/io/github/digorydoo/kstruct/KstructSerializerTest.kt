@@ -557,8 +557,10 @@ internal class KstructSerializerTest {
                                     set("fnan", Float.NaN)
                                     set("dnan", Double.NaN)
                                     setMap("hasAttributes") {
-                                        attr("one", 1)
-                                        attr("two", 2)
+                                        attr("int", 1)
+                                        attr("float", 2.0f)
+                                        attr("double", 3.0)
+                                        attr("string", "yon")
                                     }
                                     setList("items") {
                                         addList {
@@ -611,7 +613,7 @@ internal class KstructSerializerTest {
             "               d = 101.0",
             "               fnan = null",
             "               dnan = null",
-            "               hasAttributes(one = 1, two = 2)",
+            "               hasAttributes(int = 1, float = 2.0f, double = 3.0, string = \"yon\")",
             "               items = [",
             "                  [\"just one element\"],",
             "                  (someAttr = 42),",

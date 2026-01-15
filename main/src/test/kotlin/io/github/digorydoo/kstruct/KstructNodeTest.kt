@@ -2,6 +2,7 @@ package io.github.digorydoo.kstruct
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -177,6 +178,23 @@ internal class KstructValueTest {
     }
 
     @Test
+    fun `should be able to set and retrieve values in KstructMap via getter and setter`() {
+        val map = KstructMap(mutableMapOf(), mutableMapOf())
+        map["test"] = KstructFloat(7.0f)
+        map["fourty-two"] = KstructInt(42)
+        assertEquals(2, map.children.size, "size")
+        assertEquals(7.0f, (map.children["test"] as? KstructFloat)?.value, "test value")
+        assertEquals(42, (map.children["fourty-two"] as? KstructInt)?.value, "fourty-two value")
+
+        map["test"] = KstructFloat(7.5f)
+        assertEquals(7.5f, (map.children["test"] as? KstructFloat)?.value, "test NEW value")
+
+        val result = mutableListOf<String>()
+        map.forEachChild { key, value -> result.add("(key=$key, value=$value)") }
+        assertEquals("(key=test, value=7.5)(key=fourty-two, value=42)", result.joinToString(""))
+    }
+
+    @Test
     fun `should return correct values from getters of empty KstructList`() {
         val list = mutableListOf<KstructNode>()
         val value = KstructList(list)
@@ -196,5 +214,24 @@ internal class KstructValueTest {
         assertEquals(0.0f, value.toFloat())
         assertEquals(0.0, value.toDouble())
         assertEquals("KstructList()", value.toString())
+    }
+
+    @Test
+    fun `should be able to set and retrieve values in KstructList via getter and setter`() {
+        val list = KstructList(mutableListOf(KstructFloat(7.0f), KstructInt(42)))
+        assertEquals(2, list.children.size, "size")
+        assertEquals(7.0f, (list.children[0] as? KstructFloat)?.value, "test value")
+        assertEquals(42, (list.children[1] as? KstructInt)?.value, "fourty-two value")
+
+        list[1] = KstructString("ninety-nine")
+        assertEquals("ninety-nine", (list.children[1] as? KstructString)?.value, "fourty-two NEW value")
+
+        assertFailsWith<IndexOutOfBoundsException> {
+            list[2] = KstructString("Ad hoc extending of list not allowed")
+        }
+
+        val result = mutableListOf<String>()
+        list.forEachChild { idx, value -> result.add("(idx=$idx, value=$value)") }
+        assertEquals("(idx=0, value=7.0)(idx=1, value=ninety-nine)", result.joinToString(""))
     }
 }

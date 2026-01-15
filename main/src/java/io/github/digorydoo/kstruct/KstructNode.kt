@@ -119,10 +119,30 @@ class KstructMap(
     override fun mapOrNull() = children
     override fun toBoolean() = children.isNotEmpty()
     override fun toString() = "KstructMap()"
+
+    operator fun get(key: String) = children[key]
+
+    operator fun set(key: String, value: KstructNode) {
+        children[key] = value
+    }
+
+    fun forEachChild(lambda: (String, KstructNode) -> Unit) {
+        children.forEach { (key, value) -> lambda(key, value) }
+    }
 }
 
 class KstructList(val children: MutableList<KstructNode>): KstructNode() {
     override fun listOrNull() = children
     override fun toBoolean() = children.isNotEmpty()
     override fun toString() = "KstructList()"
+
+    operator fun get(key: Int) = children[key]
+
+    operator fun set(key: Int, value: KstructNode) {
+        children[key] = value
+    }
+
+    fun forEachChild(lambda: (Int, KstructNode) -> Unit) {
+        children.forEachIndexed { i, value -> lambda(i, value) }
+    }
 }
